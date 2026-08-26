@@ -9,7 +9,7 @@ env/
 *.egg-info/
 dist/
 build/
-
+.db.sqlite3
 # Node
 node_modules/
 .next/

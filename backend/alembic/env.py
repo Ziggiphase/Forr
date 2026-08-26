@@ -23,8 +23,14 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.database import engine  # noqa: E402
-target_metadata = None  # Will be set to Base.metadata once models are created in Phase 1
+from app.models.base import Base
+import app.models.user  # noqa: F401
+import app.models.business  # noqa: F401
+import app.models.product  # noqa: F401
+import app.models.conversation # noqa: F401
+import app.models.message # noqa: F401
+target_metadata = Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

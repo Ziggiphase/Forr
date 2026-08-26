@@ -1,74 +1,73 @@
 # Forr
 
-AI-powered business communication platform.
+**Forr** is a comprehensive, AI-powered conversational commerce platform designed for small-to-medium businesses (B2B SaaS). It enables business owners to completely automate customer support and sales through WhatsApp and Telegram using intelligent AI agents. The AI has direct access to the business's product catalogue, can answer questions, securely generate Paystack checkout links in-chat, and intelligently escalate complex queries to human staff.
 
-## Stack
+---
 
-- **Frontend**: Next.js (React + TypeScript) — port 3000
-- **Backend**: FastAPI (Python) — port 8000
-- **Database**: PostgreSQL 16 (via Docker) — port 5432
+## ??? Tech Stack
 
-## Prerequisites
+- **Frontend:** Next.js (React 18), Tailwind CSS, TypeScript
+- **Backend:** FastAPI, Python 3.11+, SQLAlchemy (Async), Pydantic
+- **Database:** PostgreSQL 16 (via Docker Compose)
+- **AI/LLM:** Groq API (Llama3/GPT OSS via HTTPX)
+- **Integrations:** Twilio (WhatsApp), Telegram Bot API, Paystack (Payments)
 
-- [Node.js](https://nodejs.org/) 18+
-- [Python](https://python.org/) 3.11+
-- [Docker](https://docker.com/) (for Postgres)
+---
 
-## Quick Start
+## ?? Docker & Database Architecture
 
-### 1. Start the database
+The platform relies on a **PostgreSQL 16** database. Instead of installing PostgreSQL natively on your machine, the project uses **Docker Compose** to spin up the database in an isolated container. 
 
-```bash
-docker compose up -d
-```
+- **Docker Image Used:** postgres:16-alpine (A lightweight version of the official Postgres image).
+- **Volumes:** The data is persisted locally via a Docker Volume named orr_pgdata. Even if you destroy the container, your database records remain intact on your host machine.
+- **Do we push the images to GitHub?** No. The docker-compose.yml file pulls the official public image from Docker Hub automatically. We do not build or push custom Docker images for this project.
 
-Wait for the health check to pass:
+### Starting the Database
 
-```bash
-docker compose ps
-```
+1. Ensure Docker Desktop is running.
+2. Run the following command from the project root:
+   \\\ash
+   docker-compose up -d
+   \\\
 
-### 2. Set up the backend
+---
 
-```bash
+## ?? Running the Platform Locally
+
+### 1. Backend Setup
+The backend requires a Python virtual environment and valid environment variables.
+
+\\\ash
 cd backend
+python -m venv venv
+.\venv\Scripts\activate   # Windows
+# source venv/bin/activate # Mac/Linux
+
 pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
+python run.py
+\\\
+The backend will boot up at http://localhost:8000.
 
-The API will be available at [http://localhost:8000](http://localhost:8000).
-Health check: [http://localhost:8000/health](http://localhost:8000/health)
+### 2. Frontend Setup
+The frontend requires Node.js (18+).
 
-### 3. Set up the frontend
-
-```bash
+\\\ash
 cd frontend
 npm install
 npm run dev
-```
+\\\
+The frontend will boot up at http://localhost:3000.
 
-The app will be available at [http://localhost:3000](http://localhost:3000).
+---
 
-## Environment Variables
+## ?? Environment Variables
+Ensure you copy .env.example to .env in the root of the ackend folder. You will need:
+- \GROQ_API_KEY\: To power the AI Agent.
+- \PAYSTACK_SECRET_KEY\: For generating checkout links.
+- \ENCRYPTION_KEY\: A base64 32-byte key used to securely encrypt business integrations in the database.
 
-Copy `.env.example` to `.env` and adjust if needed:
+---
 
-```bash
-cp .env.example .env
-```
+## ?? Codebase Explanation
+For a comprehensive line-by-line breakdown of every file, directory, and architectural decision, please refer to the [CODEBASE_EXPLANATION.md](./CODEBASE_EXPLANATION.md) file included in this repository.
 
-## Project Structure
-
-```
-├── frontend/          # Next.js app
-├── backend/           # FastAPI app
-│   ├── app/           # Application code
-│   │   ├── main.py    # FastAPI entry point
-│   │   ├── config.py  # Settings
-│   │   ├── database.py # DB connection
-│   │   └── models/    # SQLAlchemy models
-│   └── alembic/       # Database migrations
-├── docker-compose.yml # Postgres
-├── SPEC.md            # Project specification & roadmap
-└── README.md          # This file
-```
